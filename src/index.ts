@@ -18,6 +18,7 @@ const PI:number = 3.1415; // Constante (Nunca cambia)
 
 // PI = 2; // Si descomentas esto, veras el error de la constante
 
+//imprimir por consola
 // Formas de concatenar un Print
 console.log("Hola " + nombre + " " + apellido);
 console.log("Hola " + nombre, apellido);
@@ -38,6 +39,9 @@ let alumnos2A:string[] = ["Jose"];
 let alumnosTodos:string[] = [...alumnos1A, ...alumnos2A, "Pablo"]
 console.log(alumnosTodos);
 
+/***
+ * Creación de un objeto compuesto por datos primitivos
+ */
 
 let misDatos = {
     nombre:"Cris",
@@ -45,21 +49,41 @@ let misDatos = {
     edad:29
 }
 
+//Propagación de la variable misDatos
 let configuracion = {
     versionTS:"Es6",
     versionCodido:"1.0",
     ... misDatos
 }
 
+// Declaración y Asignación 1 a 1
 let propiedad1 = configuracion.versionTS;
 let propiedad2 = configuracion.versionCodido;
 
 console.log(`${propiedad1} ${propiedad2}`);
 
-enum EstadoTarea {"Pendiente"="P","Enproceso"="E","Terminado"="T"}
 
+/**
+ * Enumerados : permite definir un conjunto de constantes bajo un identificador.
+ * Si imprimimos el valor de un valor del enumerado observaremos que 
+ * lo que almacena es el un valor numérico.
+ * 
+ */ 
+enum EstadoTarea {
+    "Pendiente"="P",
+    "Enproceso"="E",
+    "Terminado"="T"
+}
 let estadoPendiente = EstadoTarea.Enproceso
+console.log(`El valor del enumerado Pendiente es: ${estadoPendiente}`);
 
+
+/**
+ * Interfaces: describen la estructura de un objeto.
+ * Las interfaces contienen la definición de los métodos y propiedades
+ * de un objeto, pero no su implementación.
+ * Una interfaz puede extender de otra.
+ */
 interface Tarea{
     nombre:string,
     prioridad:number,
@@ -68,6 +92,10 @@ interface Tarea{
 
 let tarea1:Tarea = {nombre:"Tarea1", prioridad:2, estado:EstadoTarea.Enproceso}
 
+/**
+ * Types: permite crear un tipo de dato personalizado a partir de tipos de datos primitivos
+ * Permiten crear una estructura de datos más compleja.
+ */
 type Empleado = {
     nombre:string,
     edad:number,
@@ -80,11 +108,20 @@ type Administrativo = {
 let empleado1:Empleado={nombre:"Cris",edad:30,sueldo:15000}
 console.log(empleado1.edad)
 
+/* Intersección de datos: permite combinar dos o más tipos de datos en uno solo. 
+*/
 let empleado2:Empleado&Administrativo;
 
 empleado2={edad:29,fotocopia:500,nombre:"Maria",sueldo:1000}
 
 console.log(empleado2)
+
+/***
+ * Operadores de comparación:
+ * 
+ * == -> compara el valor de la variable
+ * === compara el valor de la variable + el tipo de datos
+ */
 
 //Operador Ternario
 //condicion ? veradero : falso
@@ -121,3 +158,200 @@ try {
 } catch (error) {
     console.log("Se ha producido un error al convertir un numero en String",error)
 }
+
+//bucle
+let listaTareasNuevas: Tarea[] = [
+    {
+        nombre:"Tarea 1",
+        estado: EstadoTarea.Pendiente,
+        prioridad: 3
+    },
+    {
+        nombre:"Tarea 2",
+        estado: EstadoTarea.Enproceso,
+        prioridad: 0
+    },
+    {
+        nombre:"Tarea 3",
+        estado: EstadoTarea.Terminado,
+        prioridad: 1
+    }
+]
+
+//FOREACH
+listaTareasNuevas.forEach((tarea:Tarea, index:number) =>{
+    console.log(tarea,index)
+}
+);
+
+console.log("-----------")
+//FOR
+for (let index = 0; index < listaTareasNuevas.length ; index++){
+    const tarea = listaTareasNuevas[index];
+    console.log(tarea);
+}
+console.log("-----------")
+console.log(tarea1)
+
+//Bucle While
+while(tarea1.estado!==EstadoTarea.Terminado || tarea1.prioridad==3){
+    tarea1.estado=EstadoTarea.Terminado
+}
+console.log(tarea1)
+
+console.log("-----------")
+
+//bucle do while
+console.log(`La tarea 1 tiene prioridad: ${tarea1.prioridad}`)
+do{
+    tarea1.prioridad++;
+}while(tarea1.prioridad>5)
+
+console.log(`La tarea 1 tiene prioridad: ${tarea1.prioridad}`)
+
+console.log("-------------------")
+
+//FUNCIONES
+
+/**
+ * Muestra un saludo por consola a una persona
+ * @param nombre string nombre del usuario
+ * 
+ */
+function saludar (nombre:string){
+    console.log(`Hola ${nombre}, ¿Qué tal estas?`);
+
+}
+
+saludar("Cristina");
+
+//Funciones con parámeros por defecto
+
+function saludarDefault (nombre:string = "Cristina"){
+    console.log(`Hola ${nombre}, ¿Qué tal estas?`);
+}
+saludarDefault();
+saludarDefault("Jose");
+
+
+//Funciones con parámeros opcionales
+
+function saludarOpcional (nombre?:string){
+    let nombreParam = nombre;
+    if(nombreParam == undefined){
+        nombreParam = "Nombre Defecto";
+    }
+    console.log(`Hola ${nombreParam}, qué tal estas?`);
+}
+
+saludarOpcional("Cristina");
+saludarOpcional();
+
+
+// Funciones con parámetros de varios tipos
+//El tipo de a es un "tipo unión", lo que 
+//significa que puede ser de tipo string o de tipo number. 
+//Es decir, a puede ser una cadena de texto o un número.
+//Aquí se usa typeof(a) para determinar si el valor de a es un string o un number.
+//Si a es una cadena ("string"), imprime en la consola: "a es un string".
+//Si no es una cadena (es decir, es un número), imprime: "a es un number".
+function variosTipos (a: string | number){
+    if (typeof(a) == "string"){
+        console.log("a es un string");
+    } else{
+        console.log("a es un number");
+    }
+}
+variosTipos(1);
+variosTipos("Hola")
+
+
+// Función con retorno: return
+function suma (a:number,b:number): number{
+    return a+b;
+}
+var resultadoSuma:number = suma(1,2);
+console.log(resultadoSuma);
+console.log(suma(1,2));
+
+const funcRestar = function (valor1:number, valor2:number): number {
+    return valor1 - valor2;
+}
+console.log(`la resta de 5 - 2 es: ${funcRestar(5,2)}`)
+
+
+/**
+ * Funciones, rest parameters (parámetros rest)
+ * Permite definir funciones que tomen un número indeterminado de argumentos
+ */
+function multiParam (...nombres: string[]):void{
+    nombres.forEach((nombre)  => {
+        console.log(nombre);
+    })
+}
+
+multiParam("Mateo","Martin");
+
+
+// A las funciones rest también se le puede pasar una lista de elementos
+let listaNombres:string[] = ["Angel","Francisco"];
+multiParam(...listaNombres);
+
+
+let getDatosTarea = (tarea:Tarea):string => {return `La tarea denominada ${tarea.nombre} cuyo estado es ${tarea.estado} tiene una prioridad ${tarea.prioridad} `}
+console.log(getDatosTarea(tarea1));
+
+
+/**
+ * Funciones CallBack
+ * Una función callback es una función que se pasa a otra función como parámetro y dentro de la misma es llamada.
+ * Hay que tener en cuenta que una función se trata como un objeto.
+ */
+/*
+//Ejemplo 1: 
+const funcionMuestra = function (){
+    console.log("CallBack desde función estándar");
+}
+setTimeout(funcionMuestra,100); // La función timeout llama a funciónMuestra después de 100ms
+
+// Ejemplo 2: paso de una función anónima
+setTimeout(function(){console.log("CallBack desde función anónima")},1000);
+
+// Ejemplo 3: paso de una función flecha
+
+setTimeout(()=>{console.log("CallBack desde función flecha")},500);
+
+// Ejemplo 4:
+//let muestraDatos = function (a:string, b:number, c:string[]){
+  //  console.log(`Ejemplo 4 - ${a}`);
+//}
+
+//listaTareasNuevas.forEach(muestraDatos)
+
+//listaTareasNuevas.forEach((valor:string,indice:number,datos:string[]) => {
+  //  console.log(`${valor}, mostrado desde función CallBack fecha`)
+//})
+*/
+// Ejemplo 5: 
+
+let fsuma = function suma(a:number, b:number){
+    console.log("Llamada desde función opera")
+    return a+b;
+}
+
+let fresta = function resta(a:number,b:number){
+    return a-b;
+}
+/*
+console.log(fresta(5,2))
+
+// En este ejemplo estamos definiendo que la función opera espera recibir como parámetro una función CallBack
+// Concretamente, estamos diciendo que la función como entrada tiene que tener dos parámetros y devolver un número
+// Cuando se llama a dicha función CallBack desde la función principal se le pasan dichos parámetros y se vuelve a operar con el resultado
+*/
+function opera (x:number,y:number,callbackfuntion:(a:number,b:number)=> number){
+    return callbackfuntion(x,y);
+}
+
+opera(2,3,fsuma);
+opera(2,3,fresta)
