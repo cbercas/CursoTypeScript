@@ -91,6 +91,10 @@ interface Tarea{
 }
 
 let tarea1:Tarea = {nombre:"Tarea1", prioridad:2, estado:EstadoTarea.Enproceso}
+let tarea2:Tarea = {nombre:"Tarea2", prioridad:2, estado:EstadoTarea.Enproceso}
+let tarea3:Tarea = {nombre:"Tarea3", prioridad:2, estado:EstadoTarea.Enproceso}
+let tarea4:Tarea = {nombre:"Tarea4", prioridad:2, estado:EstadoTarea.Enproceso}
+let tarea5:Tarea = {nombre:"Tarea5", prioridad:2, estado:EstadoTarea.Enproceso}
 
 /**
  * Types: permite crear un tipo de dato personalizado a partir de tipos de datos primitivos
@@ -175,10 +179,21 @@ let listaTareasNuevas: Tarea[] = [
         nombre:"Tarea 3",
         estado: EstadoTarea.Terminado,
         prioridad: 1
+    },
+    {
+        nombre:"Tarea 4",
+        estado: EstadoTarea.Enproceso,
+        prioridad: 0
+    },
+    {
+        nombre:"Tarea ",
+        estado: EstadoTarea.Terminado,
+        prioridad: 1
     }
 ]
 
 //FOREACH
+console.log("Esto es el resultado del foreach")
 listaTareasNuevas.forEach((tarea:Tarea, index:number) =>{
     console.log(tarea,index)
 }
@@ -186,14 +201,16 @@ listaTareasNuevas.forEach((tarea:Tarea, index:number) =>{
 
 console.log("-----------")
 //FOR
-for (let index = 0; index < listaTareasNuevas.length ; index++){
-    const tarea = listaTareasNuevas[index];
+console.log("Esto es el resultado del for")
+for (let i = 0; i < listaTareasNuevas.length ; i++){
+    const tarea = listaTareasNuevas[i];
     console.log(tarea);
 }
 console.log("-----------")
-console.log(tarea1)
 
 //Bucle While
+console.log("Esto es el resultado del while")
+console.log(tarea1)
 while(tarea1.estado!==EstadoTarea.Terminado || tarea1.prioridad==3){
     tarea1.estado=EstadoTarea.Terminado
 }
@@ -218,43 +235,47 @@ console.log("-------------------")
  * @param nombre string nombre del usuario
  * 
  */
-function saludar (nombre:string){
+function saludar (nombre:string):void{
     console.log(`Hola ${nombre}, ¿Qué tal estas?`);
-
 }
-
 saludar("Cristina");
 
 //Funciones con parámeros por defecto
-
+/**
+ * Funcion que le entra un parametro nombre y lo muestra por consola
+ * @param nombre string nombre predefinido
+ */
 function saludarDefault (nombre:string = "Cristina"){
     console.log(`Hola ${nombre}, ¿Qué tal estas?`);
 }
 saludarDefault();
 saludarDefault("Jose");
 
-
+console.log("-----------")
 //Funciones con parámeros opcionales
-
-function saludarOpcional (nombre?:string){
+/**
+ * Funcion con parametro opcional 
+ * @param nombre 
+ */
+function saludarOpcional (nombre:string = "Cristina",apellido?:string){
     let nombreParam = nombre;
-    if(nombreParam == undefined){
-        nombreParam = "Nombre Defecto";
+    if(apellido != undefined){
+        console.log(`Hola ${nombreParam}${apellido}`);
+    }else{
+        console.log(`Hola ${nombreParam}`);
     }
-    console.log(`Hola ${nombreParam}, qué tal estas?`);
 }
 
-saludarOpcional("Cristina");
+saludarOpcional("Cristina ","Bermudez");
 saludarOpcional();
-
+console.log("-----------------")
 
 // Funciones con parámetros de varios tipos
 //El tipo de a es un "tipo unión", lo que 
 //significa que puede ser de tipo string o de tipo number. 
 //Es decir, a puede ser una cadena de texto o un número.
 //Aquí se usa typeof(a) para determinar si el valor de a es un string o un number.
-//Si a es una cadena ("string"), imprime en la consola: "a es un string".
-//Si no es una cadena (es decir, es un número), imprime: "a es un number".
+
 function variosTipos (a: string | number){
     if (typeof(a) == "string"){
         console.log("a es un string");
@@ -265,6 +286,7 @@ function variosTipos (a: string | number){
 variosTipos(1);
 variosTipos("Hola")
 
+console.log("----------")
 
 // Función con retorno: return
 function suma (a:number,b:number): number{
@@ -279,6 +301,16 @@ const funcRestar = function (valor1:number, valor2:number): number {
 }
 console.log(`la resta de 5 - 2 es: ${funcRestar(5,2)}`)
 
+console.log("----------")
+
+//funciones anonimas
+let fanonima = function(){console.log("Hola mundo")}
+fanonima();
+
+let fitera = function(elementos:Tarea,indice:number){
+    console.log(`la tarea $${elementos.nombre} se encuentra en el elemento ${indice} del array`)
+}
+listaTareasNuevas.forEach(fitera)
 
 /**
  * Funciones, rest parameters (parámetros rest)
@@ -289,18 +321,30 @@ function multiParam (...nombres: string[]):void{
         console.log(nombre);
     })
 }
-
 multiParam("Mateo","Martin");
-
-
 // A las funciones rest también se le puede pasar una lista de elementos
 let listaNombres:string[] = ["Angel","Francisco"];
 multiParam(...listaNombres);
 
+function muestraUsuarios(...tareas:Tarea[]):void{
+    tareas.forEach(fitera)
+}
 
+muestraUsuarios(tarea1,tarea2,tarea3);
+muestraUsuarios(...listaTareasNuevas);
+
+console.log("-----------")
+
+let farrow=(tarea:Tarea,indice:number) => {console.log(`${indice} - ${tarea.nombre}`)}
+farrow(tarea1,1)
+console.log("---------")
+listaTareasNuevas.forEach(farrow);
+console.log("---------")
+listaTareasNuevas.forEach((tarea:Tarea)=>{console.log(`${tarea.nombre}`)})
+/*
 let getDatosTarea = (tarea:Tarea):string => {return `La tarea denominada ${tarea.nombre} cuyo estado es ${tarea.estado} tiene una prioridad ${tarea.prioridad} `}
 console.log(getDatosTarea(tarea1));
-
+*/
 
 /**
  * Funciones CallBack
@@ -333,7 +377,7 @@ setTimeout(()=>{console.log("CallBack desde función flecha")},500);
 //})
 */
 // Ejemplo 5: 
-
+/*
 let fsuma = function suma(a:number, b:number){
     console.log("Llamada desde función opera")
     return a+b;
@@ -341,7 +385,7 @@ let fsuma = function suma(a:number, b:number){
 
 let fresta = function resta(a:number,b:number){
     return a-b;
-}
+}*/
 /*
 console.log(fresta(5,2))
 
@@ -349,9 +393,12 @@ console.log(fresta(5,2))
 // Concretamente, estamos diciendo que la función como entrada tiene que tener dos parámetros y devolver un número
 // Cuando se llama a dicha función CallBack desde la función principal se le pasan dichos parámetros y se vuelve a operar con el resultado
 */
+/*
 function opera (x:number,y:number,callbackfuntion:(a:number,b:number)=> number){
     return callbackfuntion(x,y);
 }
 
 opera(2,3,fsuma);
+
 opera(2,3,fresta)
+*/
