@@ -335,16 +335,17 @@ muestraUsuarios(...listaTareasNuevas);
 
 console.log("-----------")
 
+//variable que contiene una funcion, para que se pueda pasar una funcion a una variable tiene que se o anonima o arrow
 let farrow=(tarea:Tarea,indice:number) => {console.log(`${indice} - ${tarea.nombre}`)}
 farrow(tarea1,1)
 console.log("---------")
 listaTareasNuevas.forEach(farrow);
 console.log("---------")
 listaTareasNuevas.forEach((tarea:Tarea)=>{console.log(`${tarea.nombre}`)})
-/*
+
 let getDatosTarea = (tarea:Tarea):string => {return `La tarea denominada ${tarea.nombre} cuyo estado es ${tarea.estado} tiene una prioridad ${tarea.prioridad} `}
 console.log(getDatosTarea(tarea1));
-*/
+
 
 /**
  * Funciones CallBack
@@ -376,29 +377,112 @@ setTimeout(()=>{console.log("CallBack desde función flecha")},500);
   //  console.log(`${valor}, mostrado desde función CallBack fecha`)
 //})
 */
-// Ejemplo 5: 
-/*
+
 let fsuma = function suma(a:number, b:number){
-    console.log("Llamada desde función opera")
     return a+b;
 }
 
 let fresta = function resta(a:number,b:number){
     return a-b;
-}*/
-/*
-console.log(fresta(5,2))
+}
 
-// En este ejemplo estamos definiendo que la función opera espera recibir como parámetro una función CallBack
-// Concretamente, estamos diciendo que la función como entrada tiene que tener dos parámetros y devolver un número
-// Cuando se llama a dicha función CallBack desde la función principal se le pasan dichos parámetros y se vuelve a operar con el resultado
-*/
-/*
-function opera (x:number,y:number,callbackfuntion:(a:number,b:number)=> number){
-    return callbackfuntion(x,y);
+function opera (x:number,y:number,funcion:(a:number,b:number)=> number){
+    return funcion(x,y);
 }
 
 opera(2,3,fsuma);
 
-opera(2,3,fresta)
-*/
+opera(2,3,fresta);
+
+
+/**
+ * FUNCIONES ASINCRONAS
+ */
+
+async function asincrona(){
+    let suma: number = 0;
+    for(let i =0;i<1000000;i++){
+        suma+=i;
+    }
+    return suma
+}
+asincrona().then((data:number) => console.log(`El resultado de ejecutar asyc = ${data}`));
+//Metodos funciones asincronas
+    //asincrona().then  -->
+    //asincrona().catch  -->
+    //asincrona().finally  -->
+console.log("Linea de codigo posterior a llamada asincrona")
+
+
+/**
+ * Funcion asíncrona que consulta una API que contiene un directorio de universidades de todo el mundo.
+ * @param pais pais sobre el que se quiere filtrar los resultados
+ * @returns devuelve un JSON.
+ */
+
+/**
+ * Casteo de JSON  a objeto
+ */
+
+type University = {
+    domains: string [],
+    alpha_two_code:string,
+    name:string,
+}
+
+async function getUniversitiesAsync() : Promise <University[]> {
+    let index:number = 0;
+    const apiURL:string = "http://universities.hipolabs.com/search?country=";
+
+    //Construimos la URL de la API a consultar concatenando el pais que se quiere filtrar
+    let url:string = `${apiURL}`;
+    
+    // Con la función fetch accedemos hacemos una petición GET y obtenemos los resultados. 
+    // Usamos await para indicar que hasta que no termine esta instrucción no se ejecuta la siguiente
+    let respuesta:Response = await fetch(url);
+    // Convertimos la respuesta de la petición GET en un archivo JSON
+    let datos:Promise<University[]> = await respuesta.json() as Promise<University[]>;
+    return datos
+}
+
+getUniversitiesAsync().then((data:University[])=>{console.log(data[0].name)});
+
+
+
+async function getUniversitiesAsync02(pais:string) : Promise <JSON[]> {
+    let index:number = 0;
+    const apiURL:string = "http://universities.hipolabs.com/search?country=";
+
+    //Construimos la URL de la API a consultar concatenando el pais que se quiere filtrar
+    let url:string = `${apiURL}${pais}`;
+    
+    // Con la función fetch accedemos hacemos una petición GET y obtenemos los resultados. 
+    // Usamos await para indicar que hasta que no termine esta instrucción no se ejecuta la siguiente
+    let respuesta:Response = await fetch(url);
+    // Convertimos la respuesta de la petición GET en un archivo JSON
+    let datos:Promise<JSON[]> = await respuesta.json() as Promise<JSON[]>;
+    return datos
+}
+
+getUniversitiesAsync02("Spain").then((data)=>{console.log(data[1])});
+
+/**
+ * FUNCIONES GENERADORAS:
+ * Una función generadora es una función que se puede pausar y reanudar, y por lo tanto, nos puede devolver múltiples valores.
+ * Para poder declarar una función generadora es necesario añadir el * después de la palabra reservada function. 
+ * Observa que en lugar de llamar a return para devolver un valor, utilizamos yield.
+ * Fuente:https://lenguajejs.com/javascript/funciones/generadores/
+ */
+
+function* fGenTareas (): Generator<Tarea>{
+
+    let tareas: Tarea[] = [... listaTareasNuevas]
+
+    for(let i in tareas){
+        yield tareas[i];
+    }
+
+}
+
+let funciongen = fGenTareas();
+console.log(funciongen.next());
