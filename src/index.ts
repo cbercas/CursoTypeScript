@@ -8,6 +8,7 @@
  */
 
 import { Console } from "console";
+import Cookies from 'js-cookie';
 
 // Existe también el tipo any pero se supone que esta prohibido
 
@@ -448,7 +449,6 @@ async function getUniversitiesAsync() : Promise <University[]> {
 getUniversitiesAsync().then((data:University[])=>{console.log(data[0].name)});
 
 
-
 async function getUniversitiesAsync02(pais:string) : Promise <JSON[]> {
     let index:number = 0;
     const apiURL:string = "http://universities.hipolabs.com/search?country=";
@@ -486,3 +486,203 @@ function* fGenTareas (): Generator<Tarea>{
 
 let funciongen = fGenTareas();
 console.log(funciongen.next());
+
+
+//ASYNC GENERADORA
+
+function* fgeneradora2 () : Generator<string>{
+    yield "Hola"
+    yield "Mundo"
+    yield "IES"
+}
+
+let llamadafgen2 = fgeneradora2();
+
+let str = llamadafgen2.next();
+
+while(str.done == false){
+    console.log(str.value);
+    str = llamadafgen2.next();
+}
+llamadafgen2.next(); //hola
+llamadafgen2.next(); //mundo
+llamadafgen2.next(); //IES
+
+type Website = {
+    Name:string,
+    Domain: string,
+    Description:string
+}
+
+async function* obtenerDatosWeb():AsyncGenerator<Website> {
+
+    let respuesta:Response = await fetch("https://haveibeenpwned.com/api/v2/breaches");
+    // Convertimos la respuesta de la petición GET en un archivo JSON
+    let datos: Website[]= await respuesta.json() as Website[]
+    
+    for(let i in datos){
+        yield datos[i]
+    }
+
+    for(let index = 0;index<datos.length;index++){
+        yield datos[index]
+    }
+    
+}
+
+let datosWebPage = obtenerDatosWeb();
+
+datosWebPage.next().then(({value,done}) => {console.log(`${value.Name} - ${value.Description}  \n`); console.log(`Is the last element? ${done} \n`);});
+
+datosWebPage.next().then(({value,done}) => {console.log(value.Name)});
+
+//Sobrecarga de funciones
+
+function saludarSobrecarga (nombre:string): string;
+function saludarSobrecarga (nombre:string, apellido:string):string;
+function saludarSobrecarga (nombre:string, apellido:string,edad:string):string;
+
+function saludarSobrecarga(nombre:string,apellido?:string,edad?:string){
+    
+    let saludo =`hola ${nombre}`
+
+    if(apellido!=undefined){
+        saludo = saludo + `${apellido}`
+    }
+    if(edad!=undefined){
+        saludo = saludo + `${edad}`
+    }
+    return saludo
+}
+
+console.log(saludarSobrecarga("Cristina"))
+
+function funcionSobrecargaDiffParam(a: string, b: string): string;
+function funcionSobrecargaDiffParam(a: number, b: number): number;
+
+// Implementación de la función
+function funcionSobrecargaDiffParam(a: string | number, b: string | number): string | number {
+    if (typeof a === "string" && typeof b === "string") {
+        return a + b;
+    } else if (typeof a === "number" && typeof b === "number") {
+        return a + b;
+    }
+    throw new Error("Tipos de parámetros no coinciden");
+}
+console.log(funcionSobrecargaDiffParam("Hola, ", "mundo")); // "Hola, mundo"
+console.log(funcionSobrecargaDiffParam(5, 10)); // 15
+//console.log(funcionSobrecargaDiffParam("Hola", 10)); //ERROR
+
+/**
+ * Ejercicio 02
+ */
+
+//Definición interfaz tarea
+interface tareaEjercicio {
+    id:number
+    titulo:string
+    completada: boolean
+}
+
+//Función guardar tareas
+function guardarTareas (key:string,  data: tareaEjercicio[], type: string = "session"  // Valor por defecto es "session"
+    ):void{
+
+    if(type == "session"){
+        sessionStorage.setItem(key, JSON.stringify(data)) // Almacenamos en sessionStorage
+    }else if(type == "local"){
+        localStorage.setItem(key,JSON.stringify(data)) // Almacenamos en localStorage
+    }else{
+        console.error("El valor de type debe ser SessionStorage o LocalStorage") // Manejo de error
+    }
+
+}
+
+/**
+ * Ejercicio 03
+ */
+
+let tareas:tareaEjercicio[]=[
+    {id:1, titulo: "Pasear al perro", completada: false},
+    {id:2, titulo: "Poner la lavadora", completada: true}
+]
+
+// Guardar en SessionStorage
+guardarTareas("datos", tareas, "session");
+
+// Guardar en LocalStorage
+guardarTareas("datos", tareas, "local");
+
+/**
+ * Ejercicio 04
+ */
+
+function recuperarInformacion (key:string,type:string="session") : string  | null { 
+  
+    let result:string | null = null
+
+    if(type =="session"){
+       result = sessionStorage.getItem(key)
+    }else if(type =="local"){
+        result = localStorage.getItem(key)
+    }else{
+        console.error("El valor de type debe ser session o local")
+
+    }
+
+    return result
+}
+
+
+/**
+ * Ejercicio 05
+ */
+
+let datosSession:string | null = recuperarInformacion("datos")
+if(datosSession){
+    let datosSessionParseado:tareaEjercicio[] = JSON.parse(datosSession) as tareaEjercicio[]
+    console.log("Esta es la informacion recuperada del sessionStorage")
+    console.log(datosSessionParseado)
+}
+
+let datosLocal:string | null = recuperarInformacion("datos","local")
+if(datosLocal){
+    let datosLocalParseado:tareaEjercicio[] = JSON.parse(datosLocal) as tareaEjercicio []
+    console.log("Esta es la informacion recuperada del localStorage")
+    console.log(datosLocalParseado)
+}
+
+/**
+ * Ejercicio 06
+ */
+
+function borrarInformacion (key:string,type:string) {
+
+    if(type =="session"){
+       sessionStorage.removeItem(key)
+    }else if(type =="local"){
+        localStorage.removeItem(key)
+    }else{
+        console.log("El type introducido no es correcto")
+    }
+
+}
+
+borrarInformacion("datos","session");
+borrarInformacion("datos","local");
+
+/**
+ * Ejercicio 07
+ */
+
+Cookies.set('nombre','cristina',{expires:7,path:"/"}) 
+Cookies.set('apellidos','bermudez',{expires:2})
+Cookies.set('email','cbercas@iescarrillo.es',{expires:4})
+
+console.log(`este es el valor de la cookie nombre: ${Cookies.get("nombre")}`)
+console.log(`este es el valor de la cookie apellidos: ${Cookies.get("apellidos")}`)
+console.log(`este es el valor de la cookie email: ${Cookies.get("email")}`)
+
+Cookies.remove("nombre")
+Cookies.remove("apellidos")
+Cookies.remove("email")
