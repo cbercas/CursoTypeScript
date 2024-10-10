@@ -686,3 +686,48 @@ console.log(`este es el valor de la cookie email: ${Cookies.get("email")}`)
 Cookies.remove("nombre")
 Cookies.remove("apellidos")
 Cookies.remove("email")
+
+
+//ACCESO A LOS ELEMENTOS DEL DOC
+/*
+* HTMLInputElement
+* HTMLAnchorElement
+* HTMLTextAreaElement
+* HTMLDataListElement
+* HTMLButtonElement
+* HTMLOListElement
+* HTMLUListElement
+* HTMLLIElement
+* */
+let input = document.getElementById("input-contenido") as HTMLInputElement ;
+console.log(`valor del input: ${input.value}`)
+
+//let btnNuevoContenido = document.getElementsByName("btn-add-content") as NodeListOf<HTMLButtonElement>;
+let btnNuevoContenido = document.getElementsByName("btn-add-content") [0] as HTMLButtonElement;
+console.log(`valor del btnNuevoContenido: ${btnNuevoContenido}`)
+
+let div = document.getElementsByTagName("div") as HTMLCollectionOf<HTMLDivElement>;
+console.log(`valor del div: ${div}`);
+
+let elementoOL = document.querySelector("#lista-contenidos") as HTMLOListElement;
+let elementosLI = document.getElementById("lista-contenidos")?.getElementsByTagName("li");
+let elementosLI2 = document.querySelectorAll("ol[id='lista-contenidos'] > li");
+
+console.log(elementosLI);
+
+console.log(elementosLI2);
+
+//CREACION DE ELEMENTOS
+
+let nuevoElemento: HTMLLIElement = document.createElement("li");
+
+nuevoElemento.innerText = "Nuevo elemento";
+
+elementoOL.appendChild(nuevoElemento);
+//elementoOL.append(nuevoElemento);
+//elementoOL.prepend(nuevoElemento);
+
+
+btnNuevoContenido.addEventListener("click", (evento) => {
+    console.log("Usuario hac click en el boton");
+});
